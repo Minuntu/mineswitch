@@ -1,0 +1,15 @@
+<?php
+require(__DIR__."/../vendor/autoload.php");
+
+$configFile = 'config.php';
+
+if(!empty($argv[1])) {
+    $configFile = $argv[1];
+}
+
+foreach(require($configFile) as $config) {
+    /**
+     * @var $config \Minuntu\MineSwitch\MiningConfig
+     */
+    echo $config->getName()." ".$config->getProfitability().PHP_EOL;
+}
