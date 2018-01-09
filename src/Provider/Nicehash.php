@@ -40,24 +40,51 @@ namespace Minuntu\MineSwitch\Provider {
 
         static $nicehashData;
 
-        public function __construct() {
+        private $location;
+
+        public function __construct($location, $username, $password)
+        {
             if(is_null(self::$nicehashData)) {
                 $json = file_get_contents(
                     "https://www.nicehash.com/api?method=simplemultialgo.info"
                 );
-                if ($json === false)
+                if ($json === false) {
                     throw new \Exception('Nicehash parsing error');
+                }
                 self::$nicehashData  = json_decode($json, true);
             }
+            $this->location = $location;
+            $this->username = $username;
+            $this->password = $password;
         }
 
-        public function getProfitability($algo, $hashrate) {
+        public function getUsername()
+        {
+            return $this->username;
+        }
+
+        public function getPassword()
+        {
+            return $this->password;
+        }
+
+        public function getProfitability($algo, $hashrate) 
+        {
             $nhAlgo = self::$nicehashData['result']['simplemultialgo'][
-                array_search($algo, array_column(
-                    self::$nicehashData['result']['simplemultialgo'], 'name')
+                array_search(
+                    $algo, array_column(
+                        self::$nicehashData['result']['simplemultialgo'], 'name'
+                    )
                 )
             ];
             return $nhAlgo['paying'] * $hashrate;
+        }
+
+        public function getStratum($algo)
+        {
+            return "stratum+tcp://".$algo.".".
+                $this->location.".nicehash.com:".
+                self::$mapping[$algo][1];
         }
     }
 }

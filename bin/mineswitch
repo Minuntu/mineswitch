@@ -12,4 +12,5 @@ foreach(require($configFile) as $config) {
      * @var $config \Minuntu\MineSwitch\MiningConfig
      */
     echo $config->getName()." ".$config->getProfitability().PHP_EOL;
+    echo $config->getCommandLine().PHP_EOL;
 }
